@@ -1,0 +1,124 @@
+========================================================
+
+#####   How to install a packageper the OS type   ######
+
+========================================================
+
+@@@@@@@@    install package by checking os   @@@@@@@@@@@
+
+========================================================
+
+---
+- name: Install packages based on RHEL version
+  hosts: all
+  tasks:
+    - name: Get RHEL version
+      command: cat /etc/redhat-release
+      register: balu
+    - name: Install https package for RHEL 6.9
+      yum:
+        name: httpd
+        state: present
+      when: "'6.9' in balu.stdout"
+    - name: Install httpd package for RHEL 7.9
+      yum:
+        name: cups
+        state: present
+      when: "'7.9' in balu.stdout"  
+...  
+
+======================================================
+
+
+===============================================================================================
+
+####   how to check the user is existed in the multiple server using ansible playbook   #######
+
+===============================================================================================
+
+---
+ - name: user is existed
+   hosts: vlab
+   vars:
+    user_list: vara
+   tasks:
+    - name: user is existed
+      command: id {{ user }}
+      register: user
+    - debug:
+        msg: "User is existed"
+      when: user.rc == 0
+    - debug:
+        msg: "User is not existed"
+      when: user.rc !=0
+...
+
+
+===============================================================================================
+
+####   how to check the user is existed in the multiple server using ansible playbook   #######
+
+===============================================================================================
+
+#vi variable.yaml
+####user variable
+user_list:
+  - hari
+  - vara
+  - juju
+  - satish
+:wq!
+
+--------------------------------------
+
+#vi user.yaml
+---
+ - name: created user
+   hosts: vlab
+   gather_facts: false
+   vars_files:
+    - /root/variable.yaml
+   tasks:
+    - name: user is existed
+      command: id {{ item }}
+      register: user
+      with_items: "{{ user_list }}"
+    - debug:
+        msg: "{{ item }} is existed"
+      when: item.rc == 0
+      with_items: "{{ user.result }}"
+    - name: if the user is not existed
+      debug:
+        msg: "{{ item }} is not existed"
+      when: item.rc != 0
+...
+
+
+===============================================================================================
+
+####   how to excute multiple playbooks in on "yaml" file excute that files using "tags"  #####
+
+===============================================================================================
+
+
+---
+ - name: case1 lab test
+   hosts: vlab
+   tasks:
+    - name: display the below message
+      debug: msg="welcome to varains"
+      tags: case1
+    - debug:
+       msg: "welcome to varsins"
+      tags: case2
+    - debug:
+       msg:
+        - "welcome Hari"
+        - "welcome babu"
+        - "welcome juju"
+      tags: case3
+...
+
+command: # ansible-paybook case.yaml --tags case<number>
+
+===============================================================================================

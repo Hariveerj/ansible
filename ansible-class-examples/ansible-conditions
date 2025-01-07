@@ -1,0 +1,323 @@
+=============================================================================================
+
+##############                         Case-1                          ######################
+
+=============================================================================================
+
+---
+ - name: case1 lab test
+   hosts: vlab
+   tasks:
+    - name: display the below message
+      debug: msg="welcome to varains"
+...
+
+=============================================================================================
+
+##############                         Case-2                          ######################
+
+=============================================================================================
+
+---
+ - hosts: vlab
+   tasks:
+    - debug:
+       msg: "welcome to varsins"
+...
+
+=============================================================================================
+
+##############                         Case-3                          ######################
+
+=============================================================================================
+
+Multiple messages
+
+---
+ - hosts: vlab
+   tasks:
+    - debug:
+       msg:
+        - "welcome Hari"
+        - "welcome babu"
+        - "welcome juju"
+...
+
+=============================================================================================
+
+##############                         Case-4                          ######################
+
+=============================================================================================
+
+---
+ - name: usage of debug available
+   hosts: vlab
+   tasks:
+    - name: printing
+      debug:
+        msg: "hostname is :{{ ansible_hosts }}"
+...
+
+=============================================================================================
+
+##############                         Case-5                          ######################
+
+=============================================================================================
+
+---
+ - name: use the debug available
+   hosts: vlab
+   tasks:
+    - name: printing
+      debug:
+        var: inventory_hostname
+...
+
+=============================================================================================
+
+##############                         Case-6                          ######################
+
+=============================================================================================
+
+---
+ - name: usage of debug module
+   hosts: vlab
+   tasks:
+    - name: printing ip address
+      debug: 
+        msg: "My ip address of server :{{ ansible_default_ipv4_address }}"
+...
+
+=============================================================================================
+
+##############                         Case-7                          ######################
+
+=============================================================================================
+
+---
+ - name: Facts display
+   hosts: vlab
+   tasks:
+    - name: Display all facts variables
+      debug:
+        msg: 
+         my hostname is {{ ansible_hostname }}
+         ip address is {{ ansible_facts ['fqdn'] }}
+         Ipv4 is {{ ansible_facts.default_ipv4 }}
+...
+
+=============================================================================================
+
+##############                         Case-8                          ######################
+
+=============================================================================================
+
+---
+ - name: showing variables
+   hosts: vlab
+   tasks:
+    - name: printing IP address
+      debug:
+        msg: "My IP address of server :{{ ansible_default_ipv4.address }}"
+        verbosity: 1
+...
+
+command: # ansible-playbook <name.yaml> v
+
+NOTE: HERE WE NEED TO NUMBER OF " VVV " DEPENDS ON THE VERBODITY MENTIOED ON THE PLAYBOOK
+
+=============================================================================================
+
+##############                         Case-9                          ######################
+
+=============================================================================================
+
+---
+ - name: showing variables
+   hosts: vlab
+   vars:
+    os: "Linux"
+    cloud: "aws"
+    tools: "devops"
+   tasks:
+    - name: debug message
+      debug:
+        var: os
+...
+
+---
+ - name: Showing variables
+   hosts: vlab
+   vars:
+    os: "Linux"
+    cloud: "aws"
+    tools: "devops"
+   tasks:
+    - name: debug message
+      debug:
+        msg: "I love {{ os }}"
+...
+
+=============================================================================================
+
+##############                         Case-10                         ######################
+
+=============================================================================================
+
+---
+ - name: Showing variables
+   hosts: vlab
+   vars:
+    os: "Linux"
+    cloud: "aws"
+    tools: "devops"
+   tasks:
+    - debug: msg="we will provide training {{ os }}"
+    - debug: msg="and lab experience in {{ cloud }}"
+    - debug: msg="Basic Knowledge in {{ tools }}"
+...
+
+=============================================================================================
+
+##############                         Case-11                         ######################
+
+=============================================================================================
+
+---
+ - name: variable checking
+   hosts: vlab
+   tasks:
+    - name: here it failed to no variable of shell command
+      shell: "uname -a"
+...
+
+=============================================================================================
+
+##############                         Case-12                         ######################
+
+=============================================================================================
+
+REGISTERED MODULE WHICH CAN PRINT THE OUTPUT
+
+---
+ - name: variable checking
+   hosts: vlab
+   tasks:
+    - name: here it failed to no variable of shell command
+      shell: "uname -a"
+      register: kernel
+    - debug: 
+        var: kernel
+...
+
+=============================================================================================
+
+##############                         Case-13                         ######################
+
+=============================================================================================
+
+---
+ - name: variable checking
+   hosts: vlab
+   tasks:
+    - name: here it failed to no variable of shell command
+      shell: "uname -a"
+      register: kernel
+    - debug: 
+        msg: the uname output is {{ kernel }}
+...
+
+=============================================================================================
+
+##############                         Case-14                         ######################
+
+=============================================================================================
+
+---
+ - name: variable checking
+   hosts: vlab
+   tasks:
+    - name: here it failed to no variable of shell command
+      shell: "uname -a"
+      register: kernel
+    - debug: 
+        var: kernel.stdout
+...
+
+=============================================================================================
+
+##############                         Case-15                         ######################
+
+=============================================================================================
+
+---
+ - name: checking kernel version
+   hosts: vlab
+   tasks:
+    - name: server kernel
+      command: uname -a
+      register: kernel
+    - debug:
+       var: kernel.stdout
+
+    - name: server date
+      command: date
+      register: date
+    - debug:
+       var: date.stdout
+
+    - name: server uptime
+      command: uptime
+      register: up
+    - debug:
+       var: up.stdout
+
+    - name: server hostname
+      command: hostname
+      register: host
+    - debug:
+       var: host.stdout
+...
+
+=============================================================================================
+
+##############                         Case-16                         ######################
+
+=============================================================================================
+
+                            @@@@ debug with looping @@@@
+
+---
+ - name: checking kernel version
+   hosts: vlab
+   tasks:
+    - name: server kernel
+      command: uname -a
+      register: kernel
+
+    - name: server date
+      command: date
+      register: date
+
+    - name: server uptime
+      command: uptime
+      register: up
+
+    - name: server hostname
+      command: hostname
+      register: host
+
+    - debug:
+       var={{ item }}
+      loop:
+        - kernel.stdout
+        - date.stdout
+        - up.stdout
+        - host.stdout
+...
+
+=============================================================================================
+
+##############                         Case-17                         ######################
+
+=============================================================================================
