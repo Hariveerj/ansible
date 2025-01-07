@@ -1,0 +1,7 @@
+vim vault.yml
+- dev_pass: wakennym
+- mgr_pass: rocky
+
+echo "atenorth" >> /home/admin/ansible/password.txt
+
+ansible-vault encrypt vault.yml --vault-password-file=password.txt

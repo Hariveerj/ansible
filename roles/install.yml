@@ -1,0 +1,10 @@
+vim /home/student/ansible/roles/install.yml
+---
+- src: <>
+  name: phphello
+- src: <>
+  name: balancer
+
+
+ansible-galaxy role install /home/student/roles/install.yml -p /home/student/ansible/roles
+ansible-galaxy list

@@ -1,0 +1,33 @@
+ansible dev -a "systemctl status firewalld"
+ansible dev -a "systemctl status httpd"
+vim web.yml
+---
+ - name: stating the service
+   ansible.builtin.service:
+     name: httpd
+     state: started 
+     enabled: yes
+ - name: creating the directory
+   ansible.builtin.file:
+     path: /webdev
+     state: present
+     mode: "2775"
+     group: "apache"
+     setype: httpd_sys_content_t
+ - name: copy the content
+   ansible.builtin.copy:
+     content: "Development"
+     dest: "/webdev/index.html"
+     setype: httpd_sys_content_t
+ - name: creating the link file
+   ansible.builtin.file:
+     src: "/webdev"
+     dest: "/var/www/html/"
+     state: link
+     force: yes
+ - name: enabling the service in the firewall
+   ansible.builtin.firewalld:
+     service: http
+     state: enabled
+     permanent: yes
+     immediate: yes

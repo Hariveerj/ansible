@@ -1,0 +1,32 @@
+---
+ - name: Create a logical stroage
+   hosts: all
+   tasks:
+    - name: Create the logical volume 1500
+      community.general.lvol:
+        lv: data
+        vg: research
+        size: 1500
+    - name: Give the FS on the volume genrated
+      community.general.filesystem:
+        fstype: ext4
+        dev: /dev/research/data
+    - name: debug msg
+      ansible.builtin.debug:
+        msg: "vg not found"
+      when: ansible_lvs.vgs.research is not defined
+    - name: debug the insuffcient
+      ansible.builtin.debug:
+        msg: "Insuffient storage"
+      when: ansible_lvs.vgs.research_size_g < 1.5
+    - name: Create the logical volume
+      ansible.builtin.lvol:
+        lv: data
+        vg: research
+        size: 800
+      when: ansible_lvs.vgs.research_size_g < 1.5
+    - name: format the volume created
+      ansible.builtin.filesystem:
+        fstype: ext4
+        dev: /dev/research/data
+      when: ansible_lvs.vgs.research_size_g < 1.5

@@ -1,0 +1,13 @@
+yum install rhel-system-roles -y
+cp -r /usr/share/ansible/rhel-system-roles.timesync /home/student/ansible/roles
+ansible-galaxy list << verify >>
+vim timesync.yml
+---
+ - name: Configuring the ntp servers
+   hosts: balancers, prod
+   vars:
+     timesync_ntp_server:
+       - hostname: 172.94.294.294
+         iburst: false
+   roles:
+    - rhel-system-roles.timesync

@@ -1,0 +1,21 @@
+---
+ - name: Installing the required packages
+   hosts: all
+   tasks:
+    - name: Installing the php & mariadb
+      ansible.builtin.dnf:
+        name:
+         - php
+         - mariadb 
+        state: latest
+      when: inventory_hostname in groups['dev'] or inventory_hostname in groups['prod'] or inventory_hostname in groups['balaencers']
+    - name: Installing the development tools
+      ansible.builtin.dnf:
+        name: '@Development Tools'
+        state: present
+      when: inventory_hostname in groups['dev']
+    - name: Update the packages
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+      when: inventory_hostname in groups['dev']

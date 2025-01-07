@@ -1,0 +1,9 @@
+---
+ - name: Configuring the phphello
+   hosts: webservers
+   roles:
+    - phphello
+ - name: Configuring the balancer
+   hosts: balancers
+   roles:
+    - balancer

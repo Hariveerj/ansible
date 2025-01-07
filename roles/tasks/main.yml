@@ -1,0 +1,28 @@
+cd roles
+ansible-galaxy init apache
+vim apache/tasks/main.yml
+---
+ - name: Installing the httpd and firewalld
+   ansible.builtin.dnf:
+     name:
+      - httpd
+      - firewalld
+     state: present
+ - name: Enable the httpd service
+   ansible.builtin.service:
+     name: "{{ item }}"
+     state: started
+     enabled: true
+   loop:
+    - httpd
+    - firewalld
+ - name: Copying the template file to the path
+   ansible.builtin.template:
+     src: index.j2
+     dest: /var/www/html/
+ - name: enable the service in the firewalld
+   ansible.posix.firewalld:
+     service: http
+     state: enabled
+     permanent: yes
+     immediate: yes

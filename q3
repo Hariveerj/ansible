@@ -1,0 +1,4 @@
+mkdir /home/student/ansible/collections
+ansible-galaxy collection install < tar file url > -p collections
+ansible-galaxy collection install < tar file url > -p collections
+ansible-galaxy collection list

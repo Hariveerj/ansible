@@ -1,0 +1,5 @@
+---
+ - name: Configuring the webserver
+   hosts: webservers
+   roles:
+    - apache

@@ -1,0 +1,20 @@
+---
+ - name: Creating the Repository
+   hosts: all
+   tasks:
+    - name: Create the baseos repo
+      ansible.builtin.yum_repository:
+        name: baseos
+        description: 'RH294 Description'
+        baseurl: <url provided>
+        enabled: yes
+        gpgcheck: yes
+        gpgkey: <url provided>
+    - name: Create the appstream
+      ansible.builtin.yum_repository:
+        name: appstream
+        description: 'RH294 Description'
+        baseurl: <url provided>
+        enabled: yes
+        gpgcheck: yes
+        gpgkey: <url provided>

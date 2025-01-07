@@ -1,0 +1,5 @@
+mkdir -p collections
+ansible-galaxy collection install <<url>> collections
+ansible-galaxy collection install <<url>> collections
+ansible-galaxy collection list  (( verify ))
+ls collections/ansible_collections  ((verify))
