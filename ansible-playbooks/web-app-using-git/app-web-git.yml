@@ -1,0 +1,24 @@
+---
+ - name: Deploy a Web Application from Git
+   hosts: webservers
+   become: yes
+   vars:
+    app_repo: https://github.com/username/repository.git
+    app_dest: /var/www/myapp
+   tasks:
+    - name: Ensure git is installed
+      apt:
+        name: git
+        state: present
+    - name: Clone the web application from GitHub
+      git:
+        repo: "{{ app_repo }}"
+        dest: "{{ app_dest }}"
+      clone: yes
+      update: yes
+    - name: Install dependencies using npm
+      npm:
+        path: "{{ app_dest }}"
+        state: present
+    - name: Start the web application
+      shell: nohup node {{ app_dest }}/app.js &

@@ -1,0 +1,27 @@
+---
+ - name: Set up Python Virtual Environment
+   hosts: all
+   become: yes
+   tasks:
+    - name: Install python3 and pip
+      apt:
+       name:
+        - python3
+        - python3-pip
+       state: present
+    - name: Install virtualenv package
+      pip:
+       name: virtualenv
+       state: present
+    - name: Create a virtual environment
+      command:
+       cmd: python3-m venv /home/{{ ansible_user }}/myenv
+       creates: /home/{{ ansible_user }}/myenv
+    - name: Install dependencies in the virtual environment
+      pip:
+       requirements: /path/to/requirements.txt
+       virtualenv: /home/{{ ansible_user }}/myenv
+
+### This playbook installs Python, pip, and the virtualenv package, creates a virtual
+### environment, and installs dependencies from a requirements.txt file.
+### ansible-playbook-i inventory playbook.yml
