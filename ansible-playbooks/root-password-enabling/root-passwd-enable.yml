@@ -1,0 +1,41 @@
+---
+ - name: Secure the Server (SSH, Firewall, and Users)
+   hosts: all
+   become: yes
+   tasks:
+    - name: Disable root login over SSH
+      lineinfile:
+       path: /etc/ssh/sshd_config
+       regexp: '^#?PermitRootLogin'
+       line: 'PermitRootLogin no'
+      notify:
+       - restart ssh
+    - name: Configure UFW to allow SSH
+      ufw:
+       rule: allow
+       name: 'OpenSSH'
+    - name: Add a user for remote login
+      user:
+       name: "remoteuser"
+       state: present
+       shell: /bin/
+    - name: Disable password authentication in SSH
+      lineinfile:
+       path: /etc/ssh/sshd_config
+       regexp: '^#?PasswordAuthentication'
+       line: 'PasswordAuthentication no'
+      notify:
+       - restart ssh
+      handlers:
+    - name: restart ssh
+      service:
+       name: ssh
+       state: restarted
+
+
+###   This playbook improves server security by:
+###    ● Disabling root login via SSH.
+###    ● Setting up the UFW firewall to allow SSH traffic.
+###    ● Adding a user for secure login.
+###    ● Disabling password-based SSH authentication (requires SSH key
+###    authentication)

@@ -1,0 +1,29 @@
+---
+ - name: Install and Configure Redis
+   hosts: dbservers
+   become: yes
+   tasks:
+    - name: Install Redis
+      apt:
+       name: redis-server
+       state: present
+    - name: Start Redis service
+      service:
+       name: redis-server
+       state: started
+       enabled: yes
+    - name: Configure Redis to bind to all IP addresses
+      lineinfile:
+       path: /etc/redis/redis.conf
+       regexp: '^#?bind 127.0.0.1'
+       line: 'bind 0.0.0.0'
+      notify:
+       - restart redis
+      handlers:
+    - name: restart redis
+      service:
+       name: redis-server
+       state: restarted
+
+#### This playbook installs Redis, starts the service, and configures it to listen on all IP
+#### addresses by modifying the configuration file

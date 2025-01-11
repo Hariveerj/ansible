@@ -1,0 +1,20 @@
+---
+ - name: Backup MySQL Database
+   hosts: dbservers
+   become: yes
+   tasks:
+    - name: Backup MySQL database to a file
+      command:
+       cmd: mysqldump-u root-p{{ mysql_root_password }} {{ mysql_db }} > /backup/{{ mysql_db }}_backup.sql
+      args:
+       chdir: /tmp
+      environment:
+       MYSQL_PWD:"{{ mysql_root_password }}"
+    - name: Verify backup file
+      stat:
+       path: "/backup/{{ mysql_db }}_backup.sql"
+       register: backup_status
+    - name: Display backup status
+      debug:
+       msg: "Backup created successfully"
+      when: backup_status.stat.exists
