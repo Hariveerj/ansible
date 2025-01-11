@@ -1,0 +1,30 @@
+---
+ - name: Configure NTP on Servers
+   hosts: all
+   become: yes
+   tasks:
+    - name: Install ntp package
+      apt:
+       name: ntp
+       state: present
+    - name: Ensure NTP service is started
+      service:
+       name: ntp
+       state: started
+       enabled: yes
+    - name: Configure NTP server
+      lineinfile:
+       path: /etc/ntp.conf
+       regexp: '^server'
+       line: 'server time.nist.gov iburst'
+       notify:
+        - restart ntp
+      handlers:
+    - name: restart ntp
+      service:
+       name: ntp
+       state: restarted
+
+
+###   This playbook installs the ntp package, configures the NTP server to synchronize
+###   with an NTP source (e.g., time.nist.gov), and ensures the NTP service is running.

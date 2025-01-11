@@ -18,3 +18,7 @@
       debug:
        msg: "Backup created successfully"
       when: backup_status.stat.exists
+
+####   This playbook creates a backup of a MySQL database using mysqldump and stores
+####   it in a specified backup directory. It verifies the existence of the backup file and
+####   prints a message

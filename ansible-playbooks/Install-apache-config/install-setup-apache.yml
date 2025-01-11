@@ -1,0 +1,37 @@
+---
+ - name: Install and Configure Apache Web Server
+   hosts: webservers
+   become: yes
+   tasks:
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+    - name: Ensure Apache is running
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+    - name: Copy the website files
+      copy:
+        src: /local/path/to/website/
+        dest: /var/www/html/
+        owner: www-data
+        group: www-data
+        mode: "0755"
+    - name: Configure Apache virtual host
+      template:
+        src: /local/path/to/vhost.conf.j2
+        dest: /etc/apache2/sites-available/000-default.conf
+      notify:
+        - restart apache
+      handlers: null
+    - name: restart apache
+      service:
+        name: apache2
+        state: restarted
+
+
+
+####   This playbook installs Apache, starts the service, copies website files to the web
+####   server's document root, and configures a virtual host using a template file.

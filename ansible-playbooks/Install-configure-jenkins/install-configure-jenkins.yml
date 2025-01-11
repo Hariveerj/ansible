@@ -1,0 +1,25 @@
+---
+ - name: Set up Jenkins Server
+   hosts: jenkins_servers
+   become: yes
+   tasks:
+    - name: Install Java
+      apt:
+       name: openjdk-11-jdk
+       state: present
+    - name: Add Jenkins repository
+      apt_repository:
+       repo: "deb http://pkg.jenkins.io/debian/ stable main"
+       state: present
+    - name: Install Jenkins
+      apt:
+       name: jenkins
+       state: present
+    - name: Start Jenkins service
+      service:
+       name: jenkins
+       state: started
+       enabled: yes
+
+###   This playbook installs Java, adds the Jenkins repository, installs Jenkins, and starts
+###   the Jenkins service.

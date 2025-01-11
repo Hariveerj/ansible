@@ -1,0 +1,25 @@
+---
+ - name: System Cleanup
+   hosts: all
+   become: yes
+   tasks:
+    - name: Clean the apt cache
+      apt:
+       autoclean: yes
+    - name: Remove unused packages
+      apt:
+       autoremove: yes
+    - name: Clean old log files
+      file:
+       path: "/var/log/{{ item }}"
+       state: absent
+      loop:
+       - auth.log
+       - syslog
+       - dpkg.log
+
+
+####    This playbook cleans up the system by:
+####    ● Autocleaning the APT cache.
+####    ● Removing unused packages.
+####    ● Deleting old log files.

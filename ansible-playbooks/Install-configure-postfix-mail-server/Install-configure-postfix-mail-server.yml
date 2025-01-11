@@ -1,0 +1,26 @@
+---
+ - name: Install and Configure Postfix Mail Server
+   hosts: mailservers
+   become: yes
+   tasks:
+    - name: Install Postfix
+      apt:
+       name: postfix
+       state: present
+       
+    - name: Configure Postfix to relay emails
+      lineinfile:
+       path: /etc/postfix/main.cf
+       regexp: '^#?relayhost'
+       line: 'relayhost = [smtp.example.com]:587'
+      notify:
+        - restart postfix
+      handlers:
+    - name: restart postfix
+      service:
+       name: postfix
+       state: restarted
+
+
+####   This playbook installs the Postfix mail server, configures it to relay emails through
+####   a remote SMTP server, and restarts the service
