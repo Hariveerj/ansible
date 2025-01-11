@@ -1,0 +1,24 @@
+---
+ - name: Manage Firewall Rules
+   hosts: all
+   become: yes
+   tasks:
+    - name: Ensure ufw is installed
+      apt:
+       name: ufw
+       state: present
+    - name: Allow SSH through firewall
+      ufw:
+       rule: allow
+       name: 'OpenSSH'
+    - name: Deny all incoming traffic
+      ufw:
+       default: deny
+       direction: incoming
+    - name: Allow outgoing traffic
+      ufw:
+       default: allow
+       direction: outgoing
+    - name: Enable the firewall
+      ufw:
+       state: enabled

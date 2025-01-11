@@ -1,0 +1,23 @@
+---
+ - name: Backup Directory
+   hosts: all
+   become: yes
+   tasks:
+    - name: Create backup directory
+      file:
+        path: /backup
+        state: directory
+    - name: Copy files to backup directory
+      copy:
+        src: /path/to/important_data
+        dest: /backup/
+        remote_src: yes
+        mode: "0644"
+    - name: Verify backup
+      stat:
+        path: /backup/important_data
+        register: backup_status
+    - name: Display backup status
+      debug:
+        msg: Backup created successfully
+      when: backup_status.stat.exists

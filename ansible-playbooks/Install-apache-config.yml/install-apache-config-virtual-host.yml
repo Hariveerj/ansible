@@ -1,0 +1,24 @@
+---
+- name: Install Apache Web Server and Configure Virtual Host
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+    - name: Copy virtual host configuration file
+      template:
+        src: /path/to/vhost.conf.j2
+        dest: /etc/apache2/sites-available/vhost.conf
+      notify:
+        - restart apache
+    - name: Enable the virtual host
+      command: a2ensite vhost.conf
+      notify:
+        - restart apache
+      handlers: null
+    - name: restart apache
+      service:
+        name: apache2
+        state: restarted
