@@ -23,8 +23,8 @@
       template:
         src: /local/path/to/vhost.conf.j2
         dest: /etc/apache2/sites-available/000-default.conf
-      notify:
-        - restart apache
+        notify:
+         - restart apache
       handlers: null
     - name: restart apache
       service:
@@ -35,3 +35,6 @@
 
 ####   This playbook installs Apache, starts the service, copies website files to the web
 ####   server's document root, and configures a virtual host using a template file.
+
+
+

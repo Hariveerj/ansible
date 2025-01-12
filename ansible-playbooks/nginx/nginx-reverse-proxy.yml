@@ -1,0 +1,27 @@
+---
+ - name: Set Up Nginx Reverse Proxy
+   hosts: webservers
+   become: yes
+   tasks:
+    - name: Install Nginx
+      apt:
+       name: nginx
+       state: present
+    - name: Configure Nginx as reverse proxy
+      template:
+       src: /local/path/to/nginx_reverse_proxy.conf.j2
+       dest: /etc/nginx/sites-available/default
+       notify:
+        - restart nginx
+    - name: Ensure Nginx is started and enabled
+      service:
+       name: nginx
+       state: started
+       enabled: yes
+      handlers:
+    - name: restart nginx
+      service:
+       name: nginx
+       state: restarted
+####   This playbook installs Nginx, configures it as a reverse proxy using a template file,
+####    and ensures that the service is running and enabled on the system

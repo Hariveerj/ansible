@@ -26,3 +26,31 @@
         password: "{{ db_password }}"
         priv: "{{ db_name }}.*:ALL"
         state: present
+
+
+---
+ - name: Install and Configure MySQL Server
+   hosts: dbservers
+   become: yes
+   tasks:
+    - name: Install MySQL server
+      apt:
+       name: mysql-server
+       state: present
+    - name: Ensure MySQL service is started
+      service:
+       name: mysql
+       state: started
+       enabled: yes
+    - name: Create a database
+      mysql_db:
+       name: example_db
+       state: present
+    - name: Create a MySQL user
+      mysql_user:
+       name: example_user
+       password: "{{ mysql_user_password }}"
+       state: present
+       priv: "example_db.*:ALL"
+### This playbook installs MySQL, creates a new database and user, and grants the
+### necessary privileges

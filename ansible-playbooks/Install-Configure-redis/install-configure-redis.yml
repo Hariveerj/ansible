@@ -1,0 +1,29 @@
+---
+- name: Install and Configure Redis Cluster
+  hosts: redis_nodes
+  become: yes
+  tasks:
+    - name: Install Redis
+      apt:
+        name: redis-server
+        state: present
+    - name: Configure Redis for clustering
+      lineinfile:
+        path: /etc/redis/redis.conf
+        regexp: ^#?cluster-enabled
+        line: cluster-enabled yes
+        notify:
+          - restart redis
+    - name: Open Redis cluster ports
+      ufw:
+        rule: allow
+        name: Redis Cluster
+        port: 6379:6380
+        handlers: null
+    - name: restart redis
+      service:
+        name: redis-server
+        state: restarted
+
+####   This playbook installs Redis, configures it for clustering, and opens the required
+####    ports on the firewall

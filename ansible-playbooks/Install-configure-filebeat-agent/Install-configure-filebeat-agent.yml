@@ -1,0 +1,28 @@
+---
+ - name: Install and Configure Filebeat
+   hosts: all
+   become: yes
+   tasks:
+    - name: Install Filebeat package
+      apt:
+       name: filebeat
+       state: present
+    - name: Configure Filebeat to ship logs
+      template:
+       src: /local/path/to/filebeat.yml.j2
+       dest: /etc/filebeat/filebeat.yml
+       notify:
+        - restart filebeat
+    - name: Enable Filebeat service
+      service:
+       name: filebeat
+       state: started
+       enabled: yes
+       handlers:
+    - name: restart filebeat
+      service:
+       name: filebeat
+       state: restarted
+
+###   This playbook installs Filebeat, configures it using a template file to ship logs to a
+###    centralized log management system, and ensures the Filebeat service is started

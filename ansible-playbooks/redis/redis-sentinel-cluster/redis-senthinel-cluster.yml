@@ -1,0 +1,27 @@
+---
+ - name: Set Up Redis Sentinel Cluster
+   hosts: redis_sentinels
+   become: yes
+   tasks:
+    - name: Install Redis
+      apt:
+       name: redis-server
+       state: present
+    - name: Configure Redis Sentinel
+      template:
+       src: /local/path/to/sentinel.conf.j2
+       dest: /etc/redis/sentinel.conf
+      notify:
+       - restart redis sentinel
+    - name: Start Redis Sentinel service
+      service:
+       name: redis-sentinel
+       state: started
+       enabled: yes
+      handlers: null
+    - name: restart redis sentinel
+      service:
+       name: redis-sentinel
+       state: restarted
+###   This playbook installs Redis and sets up Redis Sentinel to provide high availability
+###   and failover for a Redis cluster

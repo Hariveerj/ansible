@@ -1,0 +1,41 @@
+---
+ - name: Install and Configure Apache Kafka
+   hosts: kafka_nodes
+   become: yes
+   tasks:
+    - name: Install Java (required for Kafka)
+      apt:
+       name: openjdk-11-jdk
+       state: present
+    - name: Download Kafka
+      get_url:
+       url: https://downloads.apache.org/kafka/2.8.0/kafka_2.13-2.8.0.tgz
+       dest: /tmp/kafka.tgz
+    - name: Extract Kafka
+      unarchive:
+       src: /tmp/kafka.tgz
+       dest: /opt/
+       remote_src: yes
+    - name: Create a Kafka systemd service
+      copy:
+       content: |
+        [Unit]
+        Description=Apache Kafka
+        After=network.target
+        [Service]
+        User=nobody
+        ExecStart=/opt/kafka_2.13-2.8.0/bin/kafka-server-start.sh
+        /opt/kafka_2.13-2.8.0/config/server.properties
+        [Install]
+        WantedBy=multi-user.target
+        dest: /etc/systemd/system/kafka.service
+        notify:- reload systemd- name: Start Kafka service
+        service:
+       name: kafka
+       state: started
+       enabled: yes
+       handlers:- name: reload systemd
+       systemd:
+       daemon_reload: yes
+####  This playbook installs Apache Kafka, configures a systemd service for it, and
+####  ensures the service is running

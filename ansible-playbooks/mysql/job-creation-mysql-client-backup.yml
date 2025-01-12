@@ -1,0 +1,26 @@
+---
+ - name: Set Up MySQL Database Backup
+   hosts: dbservers
+   become: yes
+   tasks:
+    - name: Install MySQL client and cron
+      apt:
+       name:
+        - mysql-client
+        - cron
+       state: present
+    - name: Create backup directory
+      file:
+       path: /var/backups/mysql
+       state: directory
+       mode: '0755'
+    - name: Create cron job for backup
+      cron:
+       name: "Daily MySQL Backup"
+       minute: "0"
+       hour: "2"
+       job: "/usr/bin/mysqldump-u root-p{{ mysql_root_password }}--all-databases > /var/backups/mysql/backup_$(date +\%F).sql"
+       state: present
+####  This playbook installs the MySQL client and cron service, creates a backup
+####  directory, and sets up a cron job to back up the MySQL databases every day at 2
+####  AM

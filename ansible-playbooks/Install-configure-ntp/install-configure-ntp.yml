@@ -28,3 +28,32 @@
 
 ###   This playbook installs the ntp package, configures the NTP server to synchronize
 ###   with an NTP source (e.g., time.nist.gov), and ensures the NTP service is running.
+
+---
+ - name: Install and Configure NTP
+   hosts: all
+   become: yes
+   tasks:
+    - name: Install NTP service
+      apt:
+       name: ntp
+       state: present
+    - name: Start and enable NTP service
+      service:
+       name: ntp
+       state: started
+       enabled: yes
+    - name: Configure NTP servers
+      lineinfile:
+       path: /etc/ntp.conf
+       regexp: '^server'
+       line: 'server time.google.com iburst'
+      notify:
+       - restart ntp
+      handlers:
+    - name: restart ntp
+      service:
+       name: ntp
+       state: restarted
+#### This playbook installs the NTP service, configures a specific NTP server, and
+#### ensures the service is running and enabled.

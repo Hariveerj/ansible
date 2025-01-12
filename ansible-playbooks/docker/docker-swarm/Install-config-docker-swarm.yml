@@ -1,0 +1,19 @@
+---
+ - name: Configure Docker Swarm Cluster
+   hosts: swarm_masters
+   become: yes
+   tasks:
+    - name: Install Docker
+      apt:
+       name: docker.io
+       state: present
+    - name: Initialize Docker Swarm on Master Node
+      command: docker swarm init
+      when: inventory_hostname == "master"
+    - name: Join Swarm cluster as worker node
+      command: docker swarm join--token {{ swarm_token }} {{ master_ip }}:2377
+      when: inventory_hostname != "master"
+ 
+ 
+###   This playbook configures a Docker Swarm cluster with master and worker nodes
+###   by initializing the swarm on the master and joining worker nodes.

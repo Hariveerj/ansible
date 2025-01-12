@@ -1,0 +1,19 @@
+---
+ - name: Install and Configure GitLab CI/CD Runner
+   hosts: ci_cd_servers
+   become: yes
+   tasks:
+    - name: Install GitLab Runner
+      apt:
+       name: gitlab-runner
+       state: present
+    - name: Register GitLab Runner
+      command: gitlab-runner register--url https://gitlab.com/--registration-token {{ gitlab_runner_token }}--executor shell--description "{{ inventory_hostname }}"
+      when: ansible_facts['distribution'] == 'Ubuntu'
+    - name: Start GitLab Runner
+      service:
+       name: gitlab-runner
+       state: started
+       enabled: yes
+####  This playbook installs the GitLab CI/CD runner, registers it with the GitLab
+####  instance using a registration token, and ensures the service is started

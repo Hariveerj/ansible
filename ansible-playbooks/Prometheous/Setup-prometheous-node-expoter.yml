@@ -1,0 +1,40 @@
+---
+ - name: Install and Configure Prometheus Node Exporter
+   hosts: all
+   become: yes
+   tasks:
+    - name: Download Prometheus Node Exporter
+      get_url:
+       url: https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz
+       dest: /tmp/node_exporter.tar.gz
+    - name: Extract Node Exporter
+      unarchive:
+       src: /tmp/node_exporter.tar.gz
+       dest: /opt/
+       remote_src: yes
+    - name: Create systemd service for Node Exporter
+      copy:
+       content: |
+        [Unit]
+        Description=Prometheus Node Exporter
+        After=network.target
+        [Service]
+        User=nobody
+        ExecStart=/opt/node_exporter-1.3.1.linux-amd64/node_exporter
+        [Install]
+        WantedBy=multi-user.target
+       dest: /etc/systemd/system/node_exporter.service
+       notify:
+        - reload systemd
+    - name: Start Node Exporter
+      service:
+       name: node_exporter
+       tate: started
+       nabled: yes
+      handlers:
+    - name: reload systemd
+      systemd:
+       daemon_reload: yes
+
+###   This playbook installs the Prometheus Node Exporter, creates a systemd service for
+###   it, and ensures the service is started and enabled

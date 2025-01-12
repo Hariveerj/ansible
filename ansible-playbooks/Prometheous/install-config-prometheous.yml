@@ -1,0 +1,29 @@
+---
+ - name: Install and Configure Prometheus Server
+   hosts: prometheus_servers
+   become: yes
+   tasks:
+    - name: Install Prometheus
+      apt:
+       name: prometheus
+       state: present
+    - name: Configure Prometheus server
+      template:
+       src: /local/path/to/prometheus.yml.j2
+       dest: /etc/prometheus/prometheus.yml
+      notify:
+       - restart prometheus
+    - name: Ensure Prometheus service is started
+      service:
+       name: prometheus
+       state: started
+       enabled: yes
+      handlers:
+    - name: restart prometheus
+      service:
+       name: prometheus
+       state: restarted
+
+
+####   This playbook installs Prometheus, configures it with a template file, and ensures
+####   the Prometheus service is started and enabled.

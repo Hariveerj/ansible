@@ -1,0 +1,24 @@
+---
+ - name: Install and Configure Vault Server
+   hosts: vault_servers
+   become: yes
+   tasks:
+    - name: Install Vault
+      apt:
+       name: vault
+       state: present
+    - name: Enable Vault service
+      systemd:
+       name: vault
+       enabled: yes
+       state: started
+    - name: Initialize Vault (first-time setup)
+      command: vault operator init-key-shares=1-key-threshold=1
+      register: vault_init
+      when: vault_init.rc != 0
+    - name: Unseal Vault
+      command: vault operator unseal "{{ vault_init.stdout_lines[0] }}"
+      when: vault_init.rc == 0
+
+### This playbook installs HashiCorp Vault, starts the service, and initializes and
+### unseals Vault on the first run.

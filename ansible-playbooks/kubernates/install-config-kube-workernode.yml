@@ -1,0 +1,24 @@
+---
+ - name: Configure Kubernetes Worker Nodes
+   hosts: kubernetes_workers
+   become: yes
+   tasks:
+    - name: Install kubelet, kubeadm, and kubectl
+      apt:
+       name:
+        - kubelet
+        - kubeadm
+        - kubectl
+       state: present
+    - name: Join the Kubernetes cluster
+      command: kubeadm join {{ master_ip }}:6443--token {{ token }}--discovery-token-ca-cert-hash sha256:{{ ca_hash }}
+      when: inventory_hostname != "master"
+    - name: Ensure kubelet is running
+      service:
+       name: kubelet
+       state: started
+       enabled: yes
+
+
+####  This playbook installs the necessary Kubernetes packages on worker nodes, joins
+####  the node to the Kubernetes cluster, and ensures the kubelet service is running.

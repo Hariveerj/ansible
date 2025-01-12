@@ -1,0 +1,26 @@
+---
+ - name: Install and Configure Elasticsearch
+   hosts: elasticsearch_servers
+   become: yes
+   tasks:
+    - name: Install Java (required for Elasticsearch)
+      apt:
+       name: openjdk-11-jdk
+       state: present
+    - name: Add Elasticsearch GPG key
+      apt_key:
+       url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    - name: Add Elasticsearch APT repository
+      apt_repository:
+       repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+    - name: Install Elasticsearch
+      apt:
+       name: elasticsearch
+       state: present
+    - name: Start Elasticsearch service
+      service:
+       name: elasticsearch
+       state: started
+       enabled: yes
+####   This playbook installs Elasticsearch on a server, ensures Java is present, and
+####   configures Elasticsearch to start automatically

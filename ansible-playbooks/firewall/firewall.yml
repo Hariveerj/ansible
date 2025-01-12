@@ -1,0 +1,23 @@
+---
+ - name: Configure Firewall (UFW)
+   hosts: all
+   become: yes
+   tasks:
+    - name: Install UFW (Uncomplicated Firewall)
+      apt:
+       name: ufw
+       state: present
+    - name: Allow SSH traffic
+      ufw:
+       rule: allow
+       name: OpenSSH
+    - name: Allow HTTP traffic
+      ufw:
+       rule: allow
+       name: 'Apache Full'
+    - name: Enable UFW
+      ufw:
+       state: enabled
+       default: deny
+###   This playbook installs and configures the Uncomplicated Firewall (UFW) to allow
+###   SSH and HTTPtraffic while denying other inbound connections.

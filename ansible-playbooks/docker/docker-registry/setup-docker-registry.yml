@@ -1,0 +1,24 @@
+---
+ - name: Set Up Docker Registry 
+   hosts: registry_servers
+   become: yes
+   tasks:
+    - name: Install Docker
+      apt:
+       name: docker.io
+       state: present
+    - name: Create Docker Registry directory
+      file:
+       path: /var/lib/registry
+       state: directory
+    - name: Run Docker Registry container
+      docker_container:
+       name: registry
+       image: registry:2
+       state: started
+       ports:
+        - "5000:5000"
+       volumes:
+        - /var/lib/registry:/var/lib/registry
+####   This playbook installs Docker, creates a directory for storing Docker images, and
+####   runs the Docker Registry container

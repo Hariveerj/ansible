@@ -1,0 +1,20 @@
+---
+- name: Install and Configure Jenkins Agent
+  hosts: jenkins_agents
+  become: yes
+  tasks:
+    - name: Install Java
+      apt:
+        name: openjdk-11-jdk
+        state: present
+    - name: Download Jenkins agent JAR
+      get_url:
+        url: https://<jenkins-url>/jnlpJars/agent.jar
+        dest: /opt/jenkins/agent.jar
+    - name: Run Jenkins agent
+      shell: java-jar /opt/jenkins/agent.jar-jnlpUrl <jenkins-url>/computer/{{ inventory_hostname }}/slave-agent.jnlp
+      async: 60
+      poll: 0
+
+#####    This playbook installs Java, downloads the Jenkins agent JAR, and runs the agent
+#####     as a background process to connect to the Jenkins master
